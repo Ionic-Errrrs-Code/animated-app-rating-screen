@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sparkjoy/models/experience.dart';
-import 'package:sparkjoy/widgets/animated_face.dart';
-import 'package:sparkjoy/widgets/experience_slider.dart';
-import 'package:sparkjoy/widgets/animated_text_display.dart';
+
+import '../models/experience.dart';
+import '../widgets/animated_face.dart';
+import '../widgets/animated_text_display.dart';
+import '../widgets/experience_slider.dart';
 
 class RateExperienceScreen extends StatefulWidget {
   const RateExperienceScreen({super.key});

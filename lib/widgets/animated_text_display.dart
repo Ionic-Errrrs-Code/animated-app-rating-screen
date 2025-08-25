@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sparkjoy/models/experience.dart';
 
+import '../models/experience.dart';
 class AnimatedTextDisplay extends StatelessWidget {
   final double percentage;
 

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:sparkjoy/models/experience.dart';
+
+import '../models/experience.dart';
 
 class AnimatedFace extends StatelessWidget {
   final double percentage;
