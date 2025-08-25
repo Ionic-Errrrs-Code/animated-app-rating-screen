@@ -26,10 +26,12 @@ class EyeWidget extends StatelessWidget {
         height: height,
         decoration: BoxDecoration(
           color: color,
-          shape: experience == Experience.notBad ? BoxShape.rectangle : BoxShape.circle,
+          shape: experience == Experience.good ? BoxShape.circle : BoxShape.rectangle,
           borderRadius: experience == Experience.notBad 
-              ? BorderRadius.circular(24) 
-              : null,
+              ? BorderRadius.circular(height / 2) // Flat rectangle with rounded corners
+              : experience == Experience.bad
+                  ? BorderRadius.circular(height / 2) // Oval shape
+                  : null, // Circle for good
         ),
       ),
     );
