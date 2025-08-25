@@ -22,7 +22,6 @@ class ExperienceSlider extends StatefulWidget {
 class _ExperienceSliderState extends State<ExperienceSlider>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _dragAnimation;
   double _dragOffset = 0.0;
   double _maxOffset = 0.0;
   double _centerOffset = 0.0;
@@ -44,17 +43,10 @@ class _ExperienceSliderState extends State<ExperienceSlider>
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox != null) {
       final size = renderBox.size;
-      final padding = 64.0 + 12.0 + 24.0;
+      const padding = 64.0 + 12.0 + 24.0;
       _maxOffset = size.width - padding;
       _centerOffset = _maxOffset / 2;
       _dragOffset = _maxOffset;
-      _dragAnimation = Tween<double>(
-        begin: _dragOffset,
-        end: _dragOffset,
-      ).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOut,
-      ));
     }
   }
 
@@ -89,7 +81,7 @@ class _ExperienceSliderState extends State<ExperienceSlider>
     
     widget.onScroll(percentage);
     
-    _dragAnimation = Tween<double>(
+    final animation = Tween<double>(
       begin: _dragOffset,
       end: snappedOffset,
     ).animate(CurvedAnimation(
@@ -202,7 +194,7 @@ class _ExperienceSliderState extends State<ExperienceSlider>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
