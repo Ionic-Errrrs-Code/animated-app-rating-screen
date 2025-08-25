@@ -61,9 +61,9 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
           Experience.notBad.darkColor,
           percentage / 0.5,
         )!;
-        _eyeHeight = lerpDouble(40.0, 60.0, percentage / 0.5)!;
-        _eyeWidth = lerpDouble(40.0, 88.0, percentage / 0.5)!;
-        _eyeRotation = lerpDouble(45.0, 0.0, percentage / 0.5)!;
+        _eyeHeight = lerpDouble(35.0, 50.0, percentage / 0.5)!;
+        _eyeWidth = lerpDouble(45.0, 80.0, percentage / 0.5)!;
+        _eyeRotation = lerpDouble(30.0, 0.0, percentage / 0.5)!;
         targetSliderColor = Color.lerp(
           Experience.bad.sliderColor,
           Experience.notBad.sliderColor,
@@ -83,8 +83,8 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
           Experience.good.darkColor,
           (percentage - 0.5) / 0.5,
         )!;
-        _eyeHeight = lerpDouble(60.0, 88.0, (percentage - 0.5) / 0.5)!;
-        _eyeWidth = lerpDouble(88.0, 88.0, (percentage - 0.5) / 0.5)!;
+        _eyeHeight = lerpDouble(50.0, 88.0, (percentage - 0.5) / 0.5)!;
+        _eyeWidth = lerpDouble(80.0, 88.0, (percentage - 0.5) / 0.5)!;
         _eyeRotation = lerpDouble(0.0, 0.0, (percentage - 0.5) / 0.5)!;
         targetSliderColor = Color.lerp(
           Experience.notBad.sliderColor,
@@ -129,131 +129,137 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     
-    // Calculate responsive sizes
-    final faceHeight = screenHeight * 0.15;
-    final eyeSize = screenWidth * 0.12;
-    final mouthSize = screenWidth * 0.25;
-    final textHeight = screenHeight * 0.12;
-    final textSize = screenWidth * 0.15;
+    // Calculate responsive sizes with better constraints
+    final faceHeight = (screenHeight * 0.12).clamp(80.0, 120.0);
+    final eyeSize = (screenWidth * 0.1).clamp(40.0, 60.0);
+    final mouthSize = (screenWidth * 0.2).clamp(80.0, 100.0);
+    final textHeight = (screenHeight * 0.1).clamp(60.0, 80.0);
+    final textSize = (screenWidth * 0.12).clamp(40.0, 60.0);
     
     return Scaffold(
       backgroundColor: _color,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-            // Face section
-            SizedBox(
-              height: faceHeight,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
+              // Face section
+              Flexible(
+                child: SizedBox(
+                  height: faceHeight,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      EyeWidget(
-                        experience: _experience,
-                        color: _darkColor,
-                        width: _eyeWidth.clamp(eyeSize * 0.4, eyeSize),
-                        height: _eyeHeight.clamp(eyeSize * 0.4, eyeSize),
-                        rotation: -_eyeRotation,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          EyeWidget(
+                            experience: _experience,
+                            color: _darkColor,
+                            width: _eyeWidth.clamp(eyeSize * 0.6, eyeSize),
+                            height: _eyeHeight.clamp(eyeSize * 0.6, eyeSize),
+                            rotation: -_eyeRotation,
+                          ),
+                          SizedBox(width: screenWidth * 0.03),
+                          EyeWidget(
+                            experience: _experience,
+                            color: _darkColor,
+                            width: _eyeWidth.clamp(eyeSize * 0.6, eyeSize),
+                            height: _eyeHeight.clamp(eyeSize * 0.6, eyeSize),
+                            rotation: _eyeRotation,
+                          ),
+                        ],
                       ),
-                      SizedBox(width: screenWidth * 0.04),
-                      EyeWidget(
-                        experience: _experience,
-                        color: _darkColor,
-                        width: _eyeWidth.clamp(eyeSize * 0.4, eyeSize),
-                        height: _eyeHeight.clamp(eyeSize * 0.4, eyeSize),
-                        rotation: _eyeRotation,
+                      SizedBox(height: screenHeight * 0.015),
+                      SizedBox(
+                        width: mouthSize,
+                        height: mouthSize,
+                        child: CustomPaint(
+                          painter: MouthPainter(
+                            rotation: _mouthRotation,
+                            color: _darkColor,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.02),
-                  SizedBox(
-                    width: mouthSize,
-                    height: mouthSize,
-                    child: CustomPaint(
-                      painter: MouthPainter(
-                        rotation: _mouthRotation,
-                        color: _darkColor,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            
-            SizedBox(height: screenHeight * 0.06),
-            
-            // Text section
-            SizedBox(
-              height: textHeight,
-              child: Stack(
-                children: [
-                  // Good text
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 200),
-                    left: _goodTextPosition,
-                    top: 0,
-                    child: Text(
-                      Experience.good.text,
-                      style: TextStyle(
-                        fontSize: textSize,
-                        letterSpacing: -4.5,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black.withValues(alpha: 0.35),
+              
+              SizedBox(height: screenHeight * 0.04),
+              
+              // Text section
+              Flexible(
+                child: SizedBox(
+                  height: textHeight,
+                  child: Stack(
+                    children: [
+                      // Good text
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 200),
+                        left: _goodTextPosition,
+                        top: 0,
+                        child: Text(
+                          Experience.good.text,
+                          style: TextStyle(
+                            fontSize: textSize,
+                            letterSpacing: -4.5,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black.withValues(alpha: 0.35),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  
-                  // Bad text
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 200),
-                    left: _badTextPosition,
-                    top: 0,
-                    child: Text(
-                      Experience.bad.text,
-                      style: TextStyle(
-                        fontSize: textSize,
-                        letterSpacing: -4.5,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black.withValues(alpha: 0.35),
+                      
+                      // Bad text
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 200),
+                        left: _badTextPosition,
+                        top: 0,
+                        child: Text(
+                          Experience.bad.text,
+                          style: TextStyle(
+                            fontSize: textSize,
+                            letterSpacing: -4.5,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black.withValues(alpha: 0.35),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  
-                  // Not Bad text
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 200),
-                    left: _notBadTextPosition,
-                    top: 0,
-                    child: Text(
-                      Experience.notBad.text,
-                      style: TextStyle(
-                        fontSize: textSize,
-                        letterSpacing: -4.5,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.black.withValues(alpha: 0.35),
+                      
+                      // Not Bad text
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 200),
+                        left: _notBadTextPosition,
+                        top: 0,
+                        child: Text(
+                          Experience.notBad.text,
+                          style: TextStyle(
+                            fontSize: textSize,
+                            letterSpacing: -4.5,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black.withValues(alpha: 0.35),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-            
-            SizedBox(height: screenHeight * 0.04),
-            
-            // Slider
-            ExperienceSlider(
-              experience: _experience,
-              darkColor: _darkColor,
-              sliderColor: _sliderColor,
-              onScroll: _onSliderScroll,
-            ),
-          ],
-        ),
+              
+              SizedBox(height: screenHeight * 0.03),
+              
+              // Slider
+              ExperienceSlider(
+                experience: _experience,
+                darkColor: _darkColor,
+                sliderColor: _sliderColor,
+                onScroll: _onSliderScroll,
+              ),
+            ],
+          ),
         ),
       ),
     );

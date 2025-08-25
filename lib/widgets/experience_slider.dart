@@ -81,14 +81,6 @@ class _ExperienceSliderState extends State<ExperienceSlider>
     
     widget.onScroll(percentage);
     
-    final animation = Tween<double>(
-      begin: _dragOffset,
-      end: snappedOffset,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
-    
     _animationController.forward(from: 0.0).then((_) {
       setState(() {
         _dragOffset = snappedOffset;
