@@ -38,8 +38,8 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
     _eyeWidth = 88.0;
     _eyeRotation = 0.0;
     _sliderColor = _experience.sliderColor;
-    _badTextPosition = -350.0;
-    _notBadTextPosition = -350.0;
+    _badTextPosition = -200.0;
+    _notBadTextPosition = -200.0;
     _goodTextPosition = 0.0;
   }
 
@@ -63,15 +63,15 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
           Experience.notBad.darkColor,
           percentage / 0.5,
         )!;
-        _eyeHeight = lerpDouble(32.0, 28.0, percentage / 0.5)!;
-        _eyeWidth = lerpDouble(32.0, 88.0, percentage / 0.5)!;
-        _eyeRotation = lerpDouble(100.0, 0.0, percentage / 0.5)!;
+        _eyeHeight = lerpDouble(40.0, 60.0, percentage / 0.5)!;
+        _eyeWidth = lerpDouble(40.0, 88.0, percentage / 0.5)!;
+        _eyeRotation = lerpDouble(45.0, 0.0, percentage / 0.5)!;
         targetSliderColor = Color.lerp(
           Experience.bad.sliderColor,
           Experience.notBad.sliderColor,
           percentage / 0.5,
         )!;
-        _badTextPosition = lerpDouble(0.0, 300.0, percentage / 0.5)!;
+        _badTextPosition = lerpDouble(0.0, 150.0, percentage / 0.5)!;
       } else {
         // Not Bad to Good
         targetColor = Color.lerp(
@@ -85,7 +85,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
           Experience.good.darkColor,
           (percentage - 0.5) / 0.5,
         )!;
-        _eyeHeight = lerpDouble(28.0, 88.0, (percentage - 0.5) / 0.5)!;
+        _eyeHeight = lerpDouble(60.0, 88.0, (percentage - 0.5) / 0.5)!;
         _eyeWidth = lerpDouble(88.0, 88.0, (percentage - 0.5) / 0.5)!;
         _eyeRotation = lerpDouble(0.0, 0.0, (percentage - 0.5) / 0.5)!;
         targetSliderColor = Color.lerp(
@@ -93,21 +93,21 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
           Experience.good.sliderColor,
           (percentage - 0.5) / 0.5,
         )!;
-        _badTextPosition = -300.0;
+        _badTextPosition = -150.0;
       }
 
       // Handle text positions
       if (percentage <= 0.5) {
-        _notBadTextPosition = lerpDouble(-350.0, 0.0, percentage / 0.5)!;
+        _notBadTextPosition = lerpDouble(-200.0, 0.0, percentage / 0.5)!;
       } else if (percentage <= 0.75) {
-        _notBadTextPosition = lerpDouble(0.0, 350.0, (percentage - 0.5) / 0.25)!;
+        _notBadTextPosition = lerpDouble(0.0, 200.0, (percentage - 0.5) / 0.25)!;
       } else {
-        _notBadTextPosition = -350.0;
+        _notBadTextPosition = -200.0;
       }
 
       _goodTextPosition = percentage > 0.75
-          ? lerpDouble(-300.0, 0.0, (percentage - 0.75) / 0.25)!
-          : -300.0;
+          ? lerpDouble(-200.0, 0.0, (percentage - 0.75) / 0.25)!
+          : -200.0;
 
       // Update all values
       _color = targetColor;
@@ -128,15 +128,27 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Calculate responsive sizes
+    final faceHeight = screenHeight * 0.15;
+    final eyeSize = screenWidth * 0.12;
+    final mouthSize = screenWidth * 0.25;
+    final textHeight = screenHeight * 0.12;
+    final textSize = screenWidth * 0.15;
+    
     return Scaffold(
       backgroundColor: _color,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             // Face section
             SizedBox(
-              height: 100,
+              height: faceHeight,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -146,24 +158,24 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
                       EyeWidget(
                         experience: _experience,
                         color: _darkColor,
-                        width: _eyeWidth,
-                        height: _eyeHeight,
+                        width: _eyeWidth.clamp(eyeSize * 0.4, eyeSize),
+                        height: _eyeHeight.clamp(eyeSize * 0.4, eyeSize),
                         rotation: -_eyeRotation,
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: screenWidth * 0.04),
                       EyeWidget(
                         experience: _experience,
                         color: _darkColor,
-                        width: _eyeWidth,
-                        height: _eyeHeight,
+                        width: _eyeWidth.clamp(eyeSize * 0.4, eyeSize),
+                        height: _eyeHeight.clamp(eyeSize * 0.4, eyeSize),
                         rotation: _eyeRotation,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: screenHeight * 0.02),
                   SizedBox(
-                    width: 100,
-                    height: 100,
+                    width: mouthSize,
+                    height: mouthSize,
                     child: CustomPaint(
                       painter: MouthPainter(
                         rotation: _mouthRotation,
@@ -175,11 +187,11 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
               ),
             ),
             
-            const SizedBox(height: 44),
+            SizedBox(height: screenHeight * 0.06),
             
             // Text section
             SizedBox(
-              height: 80,
+              height: textHeight,
               child: Stack(
                 children: [
                   // Good text
@@ -190,10 +202,10 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
                     child: Text(
                       Experience.good.text,
                       style: TextStyle(
-                        fontSize: 60,
+                        fontSize: textSize,
                         letterSpacing: -4.5,
                         fontWeight: FontWeight.w900,
-                        color: Colors.black.withOpacity(0.35),
+                        color: Colors.black.withValues(alpha: 0.35),
                       ),
                     ),
                   ),
@@ -206,10 +218,10 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
                     child: Text(
                       Experience.bad.text,
                       style: TextStyle(
-                        fontSize: 60,
+                        fontSize: textSize,
                         letterSpacing: -4.5,
                         fontWeight: FontWeight.w900,
-                        color: Colors.black.withOpacity(0.35),
+                        color: Colors.black.withValues(alpha: 0.35),
                       ),
                     ),
                   ),
@@ -222,10 +234,10 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
                     child: Text(
                       Experience.notBad.text,
                       style: TextStyle(
-                        fontSize: 60,
+                        fontSize: textSize,
                         letterSpacing: -4.5,
                         fontWeight: FontWeight.w900,
-                        color: Colors.black.withOpacity(0.35),
+                        color: Colors.black.withValues(alpha: 0.35),
                       ),
                     ),
                   ),
@@ -233,7 +245,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
               ),
             ),
             
-            const SizedBox(height: 32),
+            SizedBox(height: screenHeight * 0.04),
             
             // Slider
             ExperienceSlider(
@@ -243,6 +255,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen>
               onScroll: _onSliderScroll,
             ),
           ],
+        ),
         ),
       ),
     );
