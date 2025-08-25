@@ -120,7 +120,7 @@ class _ExperienceSliderState extends State<ExperienceSlider>
             children: [
               // Slider track
               Container(
-                margin: const EdgeInsets.only(top: 8.5, end: 4),
+                margin: const EdgeInsets.only(top: 8.5, bottom: 4),
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 height: 6,
                 decoration: BoxDecoration(
