@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import '../models/experience.dart';
+import 'dart:math' as math;
 
 class ExperienceSlider extends StatefulWidget {
-  final Experience experience;
   final Color darkColor;
   final Color sliderColor;
-  final Function(double) onScroll;
+  final Function(double) onChanged;
+  final double initialValue;
 
   const ExperienceSlider({
     super.key,
-    required this.experience,
     required this.darkColor,
     required this.sliderColor,
-    required this.onScroll,
+    required this.onChanged,
+    this.initialValue = 1.0,
   });
 
   @override
@@ -20,147 +20,99 @@ class ExperienceSlider extends StatefulWidget {
 }
 
 class _ExperienceSliderState extends State<ExperienceSlider>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  double _dragOffset = 0.0;
-  double _maxOffset = 0.0;
-  double _centerOffset = 0.0;
+    with TickerProviderStateMixin {
+  late AnimationController _slideController;
+  late Animation<double> _slideAnimation;
+  double _currentValue = 1.0;
+  bool _isDragging = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _currentValue = widget.initialValue;
+    _slideController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _calculateOffsets();
-    });
-  }
-
-  void _calculateOffsets() {
-    final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox != null) {
-      final size = renderBox.size;
-      const padding = 64.0 + 12.0 + 24.0;
-      _maxOffset = size.width - padding;
-      _centerOffset = _maxOffset / 2;
-      _dragOffset = _maxOffset;
-    }
-  }
-
-  double _snapToClosestOffset(double currentOffset) {
-    final distances = <double, double>{
-      0.0: (currentOffset - 0.0).abs(),
-      _centerOffset: (currentOffset - _centerOffset).abs(),
-      _maxOffset: (currentOffset - _maxOffset).abs(),
-    };
-    
-    final closest = distances.entries
-        .reduce((a, b) => a.value < b.value ? a : b);
-    
-    return closest.key;
-  }
-
-  void _onDragUpdate(DragUpdateDetails details) {
-    final newOffset = (_dragOffset + details.delta.dx)
-        .clamp(0.0, _maxOffset);
-    
-    setState(() {
-      _dragOffset = newOffset;
-    });
-    
-    final percentage = newOffset / _maxOffset;
-    widget.onScroll(percentage);
-  }
-
-  void _onDragEnd(DragEndDetails details) {
-    final snappedOffset = _snapToClosestOffset(_dragOffset);
-    final percentage = snappedOffset / _maxOffset;
-    
-    widget.onScroll(percentage);
-    
-    _animationController.forward(from: 0.0).then((_) {
-      setState(() {
-        _dragOffset = snappedOffset;
-      });
-    });
+    _slideAnimation = Tween<double>(
+      begin: _currentValue,
+      end: _currentValue,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutCubic,
+    ));
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _slideController.dispose();
     super.dispose();
+  }
+
+  void _snapToClosestPosition(double value) {
+    double targetValue;
+    
+    if (value <= 0.25) {
+      targetValue = 0.0; // Bad
+    } else if (value <= 0.75) {
+      targetValue = 0.5; // Not Bad
+    } else {
+      targetValue = 1.0; // Good
+    }
+
+    _slideAnimation = Tween<double>(
+      begin: _currentValue,
+      end: targetValue,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _slideController.reset();
+    _slideController.forward();
+
+    _slideAnimation.addListener(() {
+      setState(() {
+        _currentValue = _slideAnimation.value;
+      });
+      widget.onChanged(_currentValue);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 32),
-          child: Stack(
-            children: [
-              // Slider track
-              Container(
-                margin: const EdgeInsets.only(top: 8.5, bottom: 4),
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                height: 6,
-                decoration: BoxDecoration(
-                  color: widget.sliderColor,
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              
-              // Labels
-              Positioned(
-                top: 30,
-                left: 4,
-                child: Text(
-                  'Bad',
-                  style: TextStyle(
-                    color: widget.darkColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              
-              Positioned(
-                top: 30,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Text(
-                    'Not bad',
-                    style: TextStyle(
-                      color: widget.darkColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+    final screenWidth = MediaQuery.of(context).size.width;
+    final sliderPadding = screenWidth * 0.08;
+    final sliderWidth = screenWidth - (sliderPadding * 2);
+    final handlePosition = _currentValue * (sliderWidth - 36);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: sliderPadding),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 50,
+            child: Stack(
+              children: [
+                // Slider track
+                Positioned(
+                  left: 18,
+                  right: 18,
+                  top: 22,
+                  child: Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: widget.sliderColor,
+                      borderRadius: BorderRadius.circular(3),
                     ),
                   ),
                 ),
-              ),
-              
-              Positioned(
-                top: 30,
-                right: 0,
-                child: Text(
-                  'Good',
-                  style: TextStyle(
-                    color: widget.darkColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              
-              // Slider dots
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(3, (index) => 
-                  Container(
+                
+                // Slider markers
+                Positioned(
+                  left: 18,
+                  top: 10,
+                  child: Container(
                     width: 24,
                     height: 24,
                     decoration: BoxDecoration(
@@ -169,36 +121,108 @@ class _ExperienceSliderState extends State<ExperienceSlider>
                     ),
                   ),
                 ),
-              ),
-              
-              // Draggable handle
-              Positioned(
-                top: -8,
-                left: _dragOffset - 18, // Center the handle
-                child: GestureDetector(
-                  onPanUpdate: _onDragUpdate,
-                  onPanEnd: _onDragEnd,
+                Positioned(
+                  left: (sliderWidth / 2) - 12 + 18,
+                  top: 10,
                   child: Container(
-                    width: 36,
-                    height: 36,
+                    width: 24,
+                    height: 24,
                     decoration: BoxDecoration(
-                      color: widget.darkColor,
+                      color: widget.sliderColor,
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
                     ),
                   ),
+                ),
+                Positioned(
+                  right: 18,
+                  top: 10,
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: widget.sliderColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                
+                // Draggable handle
+                Positioned(
+                  left: handlePosition,
+                  child: GestureDetector(
+                    onPanStart: (_) {
+                      _isDragging = true;
+                      _slideController.stop();
+                    },
+                    onPanUpdate: (details) {
+                      final RenderBox renderBox = context.findRenderObject() as RenderBox;
+                      final localPosition = renderBox.globalToLocal(details.globalPosition);
+                      final newValue = ((localPosition.dx - 18) / (sliderWidth - 36)).clamp(0.0, 1.0);
+                      
+                      setState(() {
+                        _currentValue = newValue;
+                      });
+                      widget.onChanged(_currentValue);
+                    },
+                    onPanEnd: (_) {
+                      _isDragging = false;
+                      _snapToClosestPosition(_currentValue);
+                    },
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: widget.darkColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          const SizedBox(height: 20),
+          
+          // Labels
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Bad',
+                style: TextStyle(
+                  color: widget.darkColor,
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                'Not bad',
+                style: TextStyle(
+                  color: widget.darkColor,
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                'Good',
+                style: TextStyle(
+                  color: widget.darkColor,
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

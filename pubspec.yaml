@@ -1,20 +1,21 @@
-name: rate_experience_app
-description: A beautiful rating experience animation in Flutter
-publish_to: 'none'
-version: 1.0.0+1
+name: sparkjoy
+description: "A delightful and interactive rating experience in Flutter, featuring a charming animated face that dynamically responds to user input with expressive changes in color, shape, and position."
+publish_to: "none"
+version: 1.0.0
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ^3.6.0
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
