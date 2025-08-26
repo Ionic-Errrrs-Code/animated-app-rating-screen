@@ -5,6 +5,7 @@ import '../widgets/animated_face.dart';
 import '../widgets/animated_text_display.dart';
 import '../widgets/experience_slider.dart';
 import '../widgets/note_input_view.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 enum ViewState { rating, note }
 
@@ -49,6 +50,11 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final isNoteView = _viewState == ViewState.note;
+    final viewInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
+    final keyboardVisible = viewInsetsBottom > 0.0;
+    final minTop = MediaQuery.of(context).padding.top + 64;
+    final desiredTop = keyboardVisible ? screenHeight * 0.1 : screenHeight * 0.22;
+    final topOffset = desiredTop < minTop ? minTop : desiredTop;
 
     return ValueListenableBuilder<double>(
       valueListenable: _percentage,
@@ -70,7 +76,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.easeInOut,
-                    top: screenHeight * 0.25,
+                    top: topOffset,
                     left: 0,
                     right: 0,
                     child: Column(
@@ -87,11 +93,16 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        AnimatedFace(
-                          percentage: value,
-                          darkColor: darkColor,
-                          faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
+                        const SizedBox(height: 16),
+                        AnimatedScale(
+                          scale: keyboardVisible ? 0.85 : 1.0,
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOut,
+                          child: AnimatedFace(
+                            percentage: value,
+                            darkColor: darkColor,
+                            faceSize: Size(screenWidth * 0.4, screenHeight * 0.16),
+                          ),
                         ),
                       ],
                     ),
@@ -114,8 +125,8 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                                   darkColor: darkColor,
                                   focusNode: _noteFocusNode,
                                   onSubmit: () {},
-                                ),
-                                const SizedBox(height: 20),
+                                ).animate(key: const ValueKey('note_anim')).fadeIn(duration: 250.ms, curve: Curves.easeOut).slideY(begin: 0.08, end: 0, duration: 300.ms, curve: Curves.easeOutCubic),
+                                const SizedBox(height: 24),
                               ],
                             ),
                           )
@@ -123,21 +134,24 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                             key: const ValueKey('rating_view'),
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              AnimatedTextDisplay(percentage: value),
-                              const SizedBox(height: 32),
+                              AnimatedTextDisplay(percentage: value)
+                                  .animate(key: const ValueKey('text_anim'))
+                                  .fadeIn(duration: 200.ms)
+                                  .slideY(begin: 0.05, end: 0, duration: 250.ms),
+                              const SizedBox(height: 24),
                               ExperienceSlider(
                                 darkColor: darkColor,
                                 sliderColor: colors['slider']!,
                                 initialValue: value,
                                 onChanged: (p) => _percentage.value = p,
-                              ),
-                              const SizedBox(height: 32),
+                              ).animate(key: const ValueKey('slider_anim')).fadeIn(duration: 220.ms).slideY(begin: 0.05, end: 0, duration: 260.ms),
+                              const SizedBox(height: 16),
                               ActionButtons(
                                 color: darkColor,
                                 onAddNote: _switchToNoteView,
                                 onSubmit: () {},
-                              ),
-                              const SizedBox(height: 32),
+                              ).animate(key: const ValueKey('buttons_anim')).fadeIn(duration: 240.ms).slideY(begin: 0.04, end: 0, duration: 280.ms),
+                              const SizedBox(height: 24),
                             ],
                           ),
                   ),
