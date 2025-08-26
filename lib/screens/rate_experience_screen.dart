@@ -1,13 +1,17 @@
+// lib/screens/rate_experience_screen.dart
+
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/experience.dart';
 import '../widgets/action_buttons.dart';
 import '../widgets/animated_face.dart';
 import '../widgets/animated_text_display.dart';
 import '../widgets/experience_slider.dart';
 import '../widgets/note_input_view.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'thank_you_screen.dart'; // Import the new screen
 
-enum ViewState { rating, note }
+enum ViewState { rating, note, submitted }
 
 class RateExperienceScreen extends StatefulWidget {
   const RateExperienceScreen({super.key});
@@ -20,6 +24,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
   final ValueNotifier<double> _percentage = ValueNotifier<double>(1.0);
   ViewState _viewState = ViewState.rating;
   final FocusNode _noteFocusNode = FocusNode();
+  Experience _submittedExperience = Experience.good;
 
   @override
   void initState() {
@@ -43,11 +48,35 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
     _noteFocusNode.requestFocus();
   }
 
+  void _submitFeedback() {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      if (_percentage.value <= 0.25) {
+        _submittedExperience = Experience.bad;
+      } else if (_percentage.value <= 0.75) {
+        _submittedExperience = Experience.notBad;
+      } else {
+        _submittedExperience = Experience.good;
+      }
+      _viewState = ViewState.submitted;
+    });
+  }
+
+  void _resetScreen() {
+    setState(() {
+      _viewState = ViewState.rating;
+      _percentage.value = 1.0; // Reset to a default value
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final isNoteView = _viewState == ViewState.note;
+    final isSubmitted = _viewState == ViewState.submitted;
+    final viewInsets = MediaQuery.of(context).viewInsets;
+    final isKeyboardVisible = viewInsets.bottom > 100;
 
     return ValueListenableBuilder<double>(
       valueListenable: _percentage,
@@ -57,7 +86,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
 
         return Scaffold(
           backgroundColor: colors['background'],
-          resizeToAvoidBottomInset: true,
+          resizeToAvoidBottomInset: false, // Handle padding manually
           body: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => FocusScope.of(context).unfocus(),
@@ -67,97 +96,92 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Positioned.fill(child: ColoredBox(color: colors['background']!)),
-                  // --- MAIN CONTENT AREA ---
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                    top: isNoteView ? screenHeight * 0.1 : screenHeight * 0.15,
-                    left: 0,
-                    right: 0,
+                  // --- MAIN CONTENT & NOTE VIEW ---
+                  Padding(
+                    padding: EdgeInsets.only(bottom: viewInsets.bottom),
                     child: Column(
                       children: [
+                        const Spacer(flex: 2),
                         Text(
-                          'How was your experience?',
-                          style: TextStyle(
+                          isSubmitted ? ' ' : 'How was your experience?', // Hide text when submitted
+                          style: GoogleFonts.inter(
                             color: darkColor,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         )
-                            .animate(key: ValueKey(_viewState))
-                            .fade(begin: isNoteView ? 1.0 : 0.0, end: isNoteView ? 0.0 : 1.0, duration: 300.ms),
+                            .animate(target: isSubmitted || isNoteView ? 1 : 0)
+                            .fadeOut(duration: 250.ms),
                         const SizedBox(height: 24),
                         AnimatedFace(
                           percentage: value,
                           darkColor: darkColor,
                           faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
                         )
-                            .animate()
+                            .animate(target: isKeyboardVisible ? 1 : 0)
                             .scale(
-                              duration: 250.ms,
-                              begin: const Offset(1, 1),
-                              end: isNoteView ? const Offset(0.85, 0.85) : const Offset(1, 1),
-                            )
-                            .moveY(end: isNoteView ? -screenHeight * 0.05 : 0),
+                              end: const Offset(0.8, 0.8),
+                              duration: 300.ms,
+                              curve: Curves.easeOut,
+                            ),
+                        const SizedBox(height: 24),
                         if (isNoteView)
                           NoteInputView(
                             darkColor: darkColor,
                             focusNode: _noteFocusNode,
-                            onSubmit: () {},
+                            onSubmit: _submitFeedback,
                           )
                               .animate()
-                              .fadeIn(duration: 250.ms, curve: Curves.easeOut)
-                              .slideY(begin: 0.06, end: 0, duration: 280.ms, curve: Curves.easeOutCubic),
+                              .fadeIn(duration: 400.ms, curve: Curves.easeOut)
+                              .slideY(begin: 0.5, curve: Curves.easeOut),
+                        const Spacer(flex: 4),
                       ],
                     ),
                   ),
 
                   // --- BOTTOM AREA ---
-                  if (_viewState == ViewState.rating)
-                    Column(
-                      key: const ValueKey('rating_view'),
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const AnimatedTextDisplay(percentage: 1.0)
-                            .animate()
-                            .fadeIn(duration: 200.ms)
-                            .slideY(begin: 0.05, end: 0, duration: 250.ms),
-                        const SizedBox(height: 24),
-                        ExperienceSlider(
-                          darkColor: darkColor,
-                          sliderColor: colors['slider']!,
-                          initialValue: value,
-                          onChanged: (p) => _percentage.value = p,
-                        ).animate().fadeIn(duration: 220.ms).slideY(begin: 0.05, end: 0, duration: 260.ms),
-                        const SizedBox(height: 16),
-                        ActionButtons(
-                          color: darkColor,
-                          onAddNote: _switchToNoteView,
-                          onSubmit: () {},
-                        ).animate().fadeIn(duration: 240.ms).slideY(begin: 0.04, end: 0, duration: 280.ms),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
-
-                  // --- TOP BUTTONS ---
                   Positioned(
-                    top: 0,
+                    bottom: 0,
                     left: 0,
                     right: 0,
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _TopIconButton(icon: Icons.close, color: darkColor, onTap: () {}),
-                            _TopIconButton(icon: Icons.info_outline, color: darkColor, onTap: () {}),
-                          ],
+                    child: AnimatedSwitcher(
+                        duration: 400.ms,
+                        switchInCurve: Curves.easeOutQuart,
+                        switchOutCurve: Curves.easeInQuart,
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: SlideTransition(
+                              position: Tween<Offset>(
+                                begin: const Offset(0, 0.5),
+                                end: Offset.zero,
+                              ).animate(animation),
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: _buildBottomContent(isNoteView, isSubmitted, darkColor, colors, value)),
+                  ),
+
+                  // --- TOP BUTTONS ---
+                  if (!isSubmitted)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _TopIconButton(icon: Icons.close, color: darkColor, onTap: () {}),
+                              _TopIconButton(icon: Icons.info_outline, color: darkColor, onTap: () {}),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    ).animate().fadeIn(delay: 500.ms).slideY(begin: -1, curve: Curves.easeOut),
                 ],
               ),
             ),
@@ -165,6 +189,43 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
         );
       },
     );
+  }
+
+  Widget _buildBottomContent(bool isNoteView, bool isSubmitted, Color darkColor, Map<String, Color> colors, double value) {
+    if (isSubmitted) {
+      return ThankYouScreen(
+        key: const ValueKey('thank_you_view'),
+        experience: _submittedExperience,
+        darkColor: darkColor,
+        onContinue: _resetScreen,
+      );
+    } else if (isNoteView) {
+      return const SizedBox(key: ValueKey('empty_bottom'));
+    } else {
+      return Column(
+        key: const ValueKey('rating_view'),
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          AnimatedTextDisplay(percentage: value),
+          const SizedBox(height: 50),
+          ExperienceSlider(
+            darkColor: darkColor,
+            sliderColor: colors['slider']!,
+            initialValue: value,
+            onChanged: (p) => _percentage.value = p,
+          ),
+          const SizedBox(height: 70),
+          ActionButtons(
+            color: darkColor,
+            onAddNote: _switchToNoteView,
+            onSubmit: _submitFeedback,
+          ),
+          const SizedBox(height: 50),
+        ],
+      ).animate(onPlay: (c) => c.forward())
+          .slideY(begin: 0.8, duration: 500.ms, curve: Curves.easeOutCubic)
+          .fadeIn(duration: 500.ms, curve: Curves.easeOutCubic);
+    }
   }
 
   Map<String, Color> _getExperienceColors(double percentage) {

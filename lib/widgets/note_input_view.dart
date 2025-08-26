@@ -1,3 +1,5 @@
+// lib/widgets/note_input_view.dart
+
 import 'package:flutter/material.dart';
 
 class NoteInputView extends StatelessWidget {
@@ -20,7 +22,7 @@ class NoteInputView extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.1),
+          color: Colors.black.withAlpha(25), // Corrected deprecated method
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -34,7 +36,7 @@ class NoteInputView extends StatelessWidget {
                 style: TextStyle(color: darkColor, fontSize: 16, fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   hintText: 'Add note...',
-                  hintStyle: TextStyle(color: darkColor.withValues(alpha: 0.6), fontWeight: FontWeight.w600),
+                  hintStyle: TextStyle(color: darkColor.withAlpha(153), fontWeight: FontWeight.w600), // Corrected deprecated method
                   border: InputBorder.none,
                 ),
               ),

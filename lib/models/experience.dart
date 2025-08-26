@@ -48,4 +48,15 @@ enum Experience {
         return 'GOOD';
     }
   }
+
+  String get feedbackMessage {
+    switch (this) {
+      case Experience.bad:
+        return "We're sorry to hear about your experience. We're constantly working to improve and appreciate your feedback.";
+      case Experience.notBad:
+        return "Thanks for your feedback! We're always looking for ways to make our service even better.";
+      case Experience.good:
+        return "Excellent! We're thrilled you had a great experience. We look forward to serving you again soon.";
+    }
+  }
 }

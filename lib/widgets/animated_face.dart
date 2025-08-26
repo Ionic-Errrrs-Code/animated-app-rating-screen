@@ -98,7 +98,6 @@ class AnimatedEye extends StatelessWidget {
   }
 }
 
-
 class AnimatedMouth extends StatelessWidget {
   final double rotation;
   final Color color;
@@ -117,14 +116,16 @@ class AnimatedMouth extends StatelessWidget {
 
 class MouthPainter extends CustomPainter {
   final Color color;
-  MouthPainter({required this.color});
+  final double? strokeWidth;
+
+  MouthPainter({required this.color, this.strokeWidth});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.5
+      ..strokeWidth = strokeWidth ?? size.width * 0.5 // Use provided strokeWidth or default
       ..strokeCap = StrokeCap.round;
 
     final path = Path()

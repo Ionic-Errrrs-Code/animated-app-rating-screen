@@ -15,11 +15,11 @@ class ActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      padding: const EdgeInsets.all(4),
+      margin: const EdgeInsets.symmetric(horizontal: 50),
       decoration: BoxDecoration(
+        color: Colors.black.withAlpha(25),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+        //  border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
       ),
       child: Row(
         children: [
@@ -36,16 +36,11 @@ class ActionButtons extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            width: 1.5,
-            height: 30,
-            color: color.withValues(alpha: 0.5),
-          ),
           Expanded(
-            child: TextButton(
+            child: ElevatedButton(
               onPressed: onSubmit,
-              style: TextButton.styleFrom(
-                foregroundColor: color,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Row(

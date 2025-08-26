@@ -151,14 +151,17 @@ class _AnimatedHandle extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha(51), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Transform.rotate(
         angle: mouthRotation,
         child: Center(
           child: CustomPaint(
             size: Size(size * 0.4, size * 0.2),
-            painter: MouthPainter(color: Colors.white.withValues(alpha: 0.8)), // Use the same painter
+            painter: MouthPainter(
+              color: Colors.white.withAlpha(204),
+              strokeWidth: (size * 0.4) * 0.25, // Thinner stroke for the handle
+            ),
           ),
         ),
       ),
