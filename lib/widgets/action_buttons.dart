@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'submit_button.dart';
 
 class ActionButtons extends StatelessWidget {
   final Color color;
@@ -37,23 +38,10 @@ class ActionButtons extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ElevatedButton(
+            child: SubmitButton(
               onPressed: onSubmit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: color,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Submit',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, size: 20),
-                ],
-              ),
+              backgroundColor: color,
+              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
           ),
         ],

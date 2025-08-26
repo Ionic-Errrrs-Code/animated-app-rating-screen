@@ -59,4 +59,22 @@ enum Experience {
         return "Excellent! We're thrilled you had a great experience. We look forward to serving you again soon.";
     }
   }
+
+  static Map<String, Color> colorsFor(double percentage) {
+    if (percentage <= 0.5) {
+      final t = percentage / 0.5;
+      return {
+        'background': Color.lerp(Experience.bad.backgroundColor, Experience.notBad.backgroundColor, t)!,
+        'dark': Color.lerp(Experience.bad.darkColor, Experience.notBad.darkColor, t)!,
+        'slider': Color.lerp(Experience.bad.sliderColor, Experience.notBad.sliderColor, t)!,
+      };
+    } else {
+      final t = (percentage - 0.5) / 0.5;
+      return {
+        'background': Color.lerp(Experience.notBad.backgroundColor, Experience.good.backgroundColor, t)!,
+        'dark': Color.lerp(Experience.notBad.darkColor, Experience.good.darkColor, t)!,
+        'slider': Color.lerp(Experience.notBad.sliderColor, Experience.good.sliderColor, t)!,
+      };
+    }
+  }
 }

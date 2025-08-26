@@ -81,7 +81,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
     return ValueListenableBuilder<double>(
       valueListenable: _percentage,
       builder: (context, value, child) {
-        final colors = _getExperienceColors(value);
+        final colors = Experience.colorsFor(value);
         final darkColor = colors['dark']!;
 
         return Scaffold(
@@ -201,8 +201,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
           ExperienceSlider(
             darkColor: darkColor,
             sliderColor: colors['slider']!,
-            initialValue: value,
-            onChanged: (p) => _percentage.value = p,
+            percentage: _percentage,
           ),
           const SizedBox(height: 70),
           ActionButtons(
@@ -216,22 +215,6 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
           .fadeIn(duration: 400.ms, curve: Curves.easeOut)
           .slideY(begin: 0.5, duration: 400.ms, curve: Curves.easeOut);
     }
-  }
-
-  Map<String, Color> _getExperienceColors(double percentage) {
-    Color backgroundColor, darkColor, sliderColor;
-    if (percentage <= 0.5) {
-      final t = percentage / 0.5;
-      backgroundColor = Color.lerp(Experience.bad.backgroundColor, Experience.notBad.backgroundColor, t)!;
-      darkColor = Color.lerp(Experience.bad.darkColor, Experience.notBad.darkColor, t)!;
-      sliderColor = Color.lerp(Experience.bad.sliderColor, Experience.notBad.sliderColor, t)!;
-    } else {
-      final t = (percentage - 0.5) / 0.5;
-      backgroundColor = Color.lerp(Experience.notBad.backgroundColor, Experience.good.backgroundColor, t)!;
-      darkColor = Color.lerp(Experience.notBad.darkColor, Experience.good.darkColor, t)!;
-      sliderColor = Color.lerp(Experience.notBad.sliderColor, Experience.good.sliderColor, t)!;
-    }
-    return {'background': backgroundColor, 'dark': darkColor, 'slider': sliderColor};
   }
 }
 

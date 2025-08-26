@@ -1,6 +1,7 @@
 // lib/widgets/note_input_view.dart
 
 import 'package:flutter/material.dart';
+import 'submit_button.dart';
 
 class NoteInputView extends StatelessWidget {
   final Color darkColor;
@@ -49,26 +50,10 @@ class NoteInputView extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.bottomRight,
-              child: ElevatedButton(
+              child: SubmitButton(
                 onPressed: onSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: darkColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.all(16),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Submit',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 20),
-                  ],
-                ),
+                backgroundColor: darkColor,
+                padding: const EdgeInsets.all(16),
               ),
             ),
           ],
