@@ -58,97 +58,105 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
 
         return Scaffold(
           resizeToAvoidBottomInset: true, // Important for keyboard
-          body: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            color: colors['background'],
-            child: Stack(
-              children: [
-                // --- TOP BUTTONS ---
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              color: colors['background'],
+              child: Stack(
+                children: [
+                  // --- MAIN CONTENT AREA (Face always visible, text fades) ---
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                    top: screenHeight * 0.25,
+                    left: 0,
+                    right: 0,
+                    child: Column(
                       children: [
-                        _TopIconButton(icon: Icons.close, color: darkColor, onTap: () {}),
-                        _TopIconButton(icon: Icons.info_outline, color: darkColor, onTap: () {}),
+                        AnimatedOpacity(
+                          opacity: isNoteView ? 0.0 : 1.0,
+                          duration: const Duration(milliseconds: 250),
+                          child: Text(
+                            'How was your experience?',
+                            style: TextStyle(
+                              color: darkColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        AnimatedFace(
+                          percentage: value,
+                          darkColor: darkColor,
+                          faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
+                        ),
                       ],
                     ),
                   ),
-                ),
 
-                // --- MAIN CONTENT AREA ---
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOut,
-                  top: isNoteView ? screenHeight * 0.15 : screenHeight * 0.25,
-                  left: 0,
-                  right: 0,
-                  child: Column(
-                    children: [
-                      Text(
-                        'How was your experience?',
-                        style: TextStyle(
-                          color: darkColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      AnimatedFace(
-                        percentage: value,
-                        darkColor: darkColor,
-                        faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // --- BOTTOM AREA (Rating or Note Input) ---
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                  child: isNoteView
-                      ? Padding(
-                          key: const ValueKey('note_view'),
-                          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                          child: Column(
+                  // --- BOTTOM AREA (Rating or Note Input) ---
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                    child: isNoteView
+                        ? Padding(
+                            key: const ValueKey('note_view'),
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                NoteInputView(
+                                  darkColor: darkColor,
+                                  focusNode: _noteFocusNode,
+                                  onSubmit: () {},
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            key: const ValueKey('rating_view'),
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              NoteInputView(
+                              AnimatedTextDisplay(percentage: value),
+                              const SizedBox(height: 32),
+                              ExperienceSlider(
                                 darkColor: darkColor,
-                                focusNode: _noteFocusNode,
+                                sliderColor: colors['slider']!,
+                                initialValue: value,
+                                onChanged: (p) => _percentage.value = p,
+                              ),
+                              const SizedBox(height: 32),
+                              ActionButtons(
+                                color: darkColor,
+                                onAddNote: _switchToNoteView,
                                 onSubmit: () {},
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 32),
                             ],
                           ),
-                        )
-                      : Column(
-                          key: const ValueKey('rating_view'),
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            AnimatedTextDisplay(percentage: value),
-                            const SizedBox(height: 32),
-                            ExperienceSlider(
-                              darkColor: darkColor,
-                              sliderColor: colors['slider']!,
-                              initialValue: value,
-                              onChanged: (p) => _percentage.value = p,
-                            ),
-                            const SizedBox(height: 32),
-                            ActionButtons(
-                              color: darkColor,
-                              onAddNote: _switchToNoteView,
-                              onSubmit: () {},
-                            ),
-                            const SizedBox(height: 32),
-                          ],
-                        ),
-                ),
-              ],
+                  ),
+
+                  // --- TOP BUTTONS (kept on top of everything) ---
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _TopIconButton(icon: Icons.close, color: darkColor, onTap: () {}),
+                          _TopIconButton(icon: Icons.info_outline, color: darkColor, onTap: () {}),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -123,7 +123,7 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: ['Bad', 'Not bad', 'Good']
-                    .map((label) => Text(label, style: TextStyle(color: widget.darkColor, fontSize: 14, fontWeight: FontWeight.w500)))
+                    .map((label) => Text(label, style: TextStyle(color: widget.darkColor, fontSize: 14, fontWeight: FontWeight.bold)))
                     .toList(),
               ),
             ],
