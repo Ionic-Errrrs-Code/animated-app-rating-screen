@@ -94,10 +94,15 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        AnimatedFace(
-                          percentage: value,
-                          darkColor: darkColor,
-                          faceSize: Size(screenWidth * 0.4, screenHeight * 0.16),
+                        AnimatedScale(
+                          scale: keyboardVisible ? 0.85 : 1.0,
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOut,
+                          child: AnimatedFace(
+                            percentage: value,
+                            darkColor: darkColor,
+                            faceSize: Size(screenWidth * 0.4, screenHeight * 0.16),
+                          ),
                         ),
                       ],
                     ),
