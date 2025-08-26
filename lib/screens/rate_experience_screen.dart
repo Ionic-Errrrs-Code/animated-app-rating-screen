@@ -71,10 +71,12 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
             onTap: () => FocusScope.of(context).unfocus(),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              color: Colors.transparent,
+              color: colors['background'],
               child: Stack(
                 fit: StackFit.expand,
                 children: [
+                  // Background filler to avoid black flashes
+                  Positioned.fill(child: ColoredBox(color: colors['background']!)),
                   // --- MAIN CONTENT AREA (Face always visible, text fades; note appears below face) ---
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 400),
