@@ -31,10 +31,10 @@ class NoteInputView extends StatelessWidget {
                 maxLines: null, // Allows multiline input
                 keyboardType: TextInputType.multiline,
                 cursorColor: darkColor,
-                style: TextStyle(color: darkColor, fontSize: 16),
+                style: TextStyle(color: darkColor, fontSize: 16, fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   hintText: 'Add note...',
-                  hintStyle: TextStyle(color: darkColor.withValues(alpha: 0.6)),
+                  hintStyle: TextStyle(color: darkColor.withValues(alpha: 0.6), fontWeight: FontWeight.w600),
                   border: InputBorder.none,
                 ),
               ),
