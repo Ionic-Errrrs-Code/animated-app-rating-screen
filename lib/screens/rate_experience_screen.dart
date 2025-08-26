@@ -66,17 +66,19 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
               color: colors['background'],
               child: Stack(
                 children: [
-                  // --- MAIN CONTENT AREA ---
-                  if (!isNoteView)
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                      top: screenHeight * 0.25,
-                      left: 0,
-                      right: 0,
-                      child: Column(
-                        children: [
-                          Text(
+                  // --- MAIN CONTENT AREA (Face always visible, text fades) ---
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                    top: screenHeight * 0.25,
+                    left: 0,
+                    right: 0,
+                    child: Column(
+                      children: [
+                        AnimatedOpacity(
+                          opacity: isNoteView ? 0.0 : 1.0,
+                          duration: const Duration(milliseconds: 250),
+                          child: Text(
                             'How was your experience?',
                             style: TextStyle(
                               color: darkColor,
@@ -84,15 +86,16 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          AnimatedFace(
-                            percentage: value,
-                            darkColor: darkColor,
-                            faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 24),
+                        AnimatedFace(
+                          percentage: value,
+                          darkColor: darkColor,
+                          faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
+                        ),
+                      ],
                     ),
+                  ),
 
                   // --- BOTTOM AREA (Rating or Note Input) ---
                   AnimatedSwitcher(
