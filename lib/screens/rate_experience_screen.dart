@@ -157,18 +157,23 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                   ),
 
                   // --- TOP BUTTONS (kept on top of everything) ---
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _TopIconButton(icon: Icons.close, color: darkColor, onTap: () {}),
-                          _TopIconButton(icon: Icons.info_outline, color: darkColor, onTap: () {}),
-                        ],
-                      ),
-                    ),
-                  ),
+                 Positioned(
+                   top: 0,
+                   left: 0,
+                   right: 0,
+                   child: SafeArea(
+                     child: Padding(
+                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                       child: Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           _TopIconButton(icon: Icons.close, color: darkColor, onTap: () {}),
+                           _TopIconButton(icon: Icons.info_outline, color: darkColor, onTap: () {}),
+                         ],
+                       ),
+                     ),
+                   ),
+                 ),
                 ],
               ),
             ),
