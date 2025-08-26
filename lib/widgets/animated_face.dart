@@ -51,7 +51,7 @@ class AnimatedFace extends StatelessWidget {
             rotation: mouthRotation,
             color: darkColor,
             // --- Mouth size adjusted ---
-            size: Size(faceSize.width * 0.25, faceSize.height * 0.18),
+            size: Size(faceSize.width * 0.2, faceSize.height * 0.18),
           ),
         ],
       ),
@@ -125,7 +125,7 @@ class MouthPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       // --- Mouth radius/thickness adjusted ---
-      ..strokeWidth = size.width * 0.3
+      ..strokeWidth = size.width * 0.35
       ..strokeCap = StrokeCap.round;
 
     final path = Path()
