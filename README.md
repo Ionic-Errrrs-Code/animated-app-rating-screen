@@ -1,84 +1,68 @@
-# Rate Experience App 🎭
+# SparkJoy – Rate Experience App
 
-A beautiful, responsive rating experience animation built with Flutter that mimics the Jetpack Compose version with smooth animations and gesture controls.
+A delightful Flutter experience rating screen with expressive animations, smooth color transitions, and an interactive slider. Built to be easy to drop into any app.
 
-## Features ✨
+## Features
 
-- **Smooth Animations**: Fluid transitions between different rating states
-- **Interactive Slider**: Drag to change the rating with real-time visual feedback
-- **Dynamic Face**: Eyes and mouth that change shape, size, and rotation
-- **Color Transitions**: Beautiful color blending between rating states
-- **Responsive Design**: Works perfectly on all screen sizes
-- **Performance Optimized**: Smooth 60fps animations with no lag
+- Smooth, physics-inspired slider with snap-to-states
+- Expressive animated face driven by a single percentage value
+- Color interpolation across Bad → Not Bad → Good
+- Clean architecture with small, testable widgets
+- Responsive layout via `flutter_screenutil` (iPhone 14/15 base design)
+- Centralized constants for spacing, durations, and strings
 
-## How It Works 🔧
+## Demo
 
-The app uses a single slider position (0.0 to 1.0) to control all animations:
+- Drag the handle to change the mood
+- Tap “Add notes” to write a note, “Submit” to see a thank-you screen
 
-- **0.0 - 0.5**: Bad to Not Bad transition
-- **0.5 - 1.0**: Not Bad to Good transition
+## Getting Started
 
-As you drag the slider:
-- Background color smoothly transitions
-- Face expressions change dynamically
-- Text labels slide in/out from the sides
-- All colors blend seamlessly using linear interpolation
+1) Prerequisites
+- Flutter 3.16+ recommended
 
-## Getting Started 🚀
+2) Install
+```bash
+git clone <your-repo-url>
+cd sparkjoy
+flutter pub get
+```
 
-1. **Prerequisites**
-   - Flutter SDK (3.0.0 or higher)
-   - Dart SDK
-   - Android Studio / VS Code with Flutter extensions
+3) Run
+```bash
+flutter run
+```
 
-2. **Installation**
-   ```bash
-   git clone <repository-url>
-   cd rate_experience_app
-   flutter pub get
-   ```
+## How to Use in Your App
 
-3. **Run the App**
-   ```bash
-   flutter run
-   ```
+- Copy the `lib/` folder or specific widgets/screens you need
+- Ensure `flutter_screenutil` is in your `pubspec.yaml`
+- Set your design size in `main.dart` using `ScreenUtilInit`
+- Customize constants in `lib/utils/constants.dart`
 
-## Architecture 🏗️
+Key files:
+- `lib/screens/rate_experience_screen.dart`: Main screen
+- `lib/widgets/experience_slider.dart`: Custom slider with snapping
+- `lib/widgets/animated_face.dart`: Face with eyes/mouth animation
+- `lib/widgets/animated_text_display.dart`: Headline word transitions
+- `lib/widgets/action_buttons.dart`: Bottom actions
+- `lib/widgets/note_input_view.dart`: Notes input area
+- `lib/widgets/submit_button.dart`: Shared Submit button
+- `lib/models/experience.dart`: Enum with colors, labels, and helpers
+- `lib/utils/constants.dart`: Spacing, durations, strings
 
-- **`main.dart`**: App entry point
-- **`models/experience.dart`**: Experience enum with colors and properties
-- **`widgets/mouth_painter.dart`**: Custom painter for the mouth
-- **`widgets/eye_widget.dart`**: Eye widget with dynamic shapes
-- **`widgets/experience_slider.dart`**: Interactive slider with gesture handling
-- **`screens/rate_experience_screen.dart`**: Main screen orchestrating all animations
+## Configuration
 
-## Performance Features ⚡
+- Design base: iPhone 14/15 logical size `Size(393, 852)` in `main.dart`
+- Adjust spacing, radii, durations, and strings in `constants.dart`
+- Colors live in `Experience` enum; interpolation via `Experience.colorsFor(percentage)`
 
-- **Efficient Rendering**: Only rebuilds necessary widgets
-- **Smooth Animations**: Uses Flutter's optimized animation system
-- **Gesture Handling**: Responsive touch controls with proper gesture detection
-- **Memory Management**: Proper disposal of animation controllers
+## Contributing
 
-## Customization 🎨
+PRs and issues welcome! Please keep code readable and follow existing styles.
 
-You can easily customize:
-- Colors for each rating state
-- Animation durations and curves
-- Text styles and positioning
-- Slider appearance and behavior
+## License
 
-## Platform Support 📱
+This project is licensed under the MIT License – see `LICENSE`.
 
-- ✅ Android
-- ✅ iOS
-- ✅ Web
-- ✅ Desktop
-
-## Dependencies 📦
-
-- `flutter`: Core Flutter framework
-- `cupertino_icons`: iOS-style icons
-
-## License 📄
-
-This project is open source and available under the MIT License.
+Copyright (c) 2025 Ionic Errrrs Code

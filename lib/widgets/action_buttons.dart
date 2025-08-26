@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../utils/constants.dart';
 import 'submit_button.dart';
 
+/// Bottom action bar with Add notes and Submit actions.
 class ActionButtons extends StatelessWidget {
   final Color color;
   final VoidCallback onAddNote;
@@ -16,11 +19,10 @@ class ActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 50),
+      margin: EdgeInsets.symmetric(horizontal: 50.w),
       decoration: BoxDecoration(
         color: Colors.black.withAlpha(25),
-        borderRadius: BorderRadius.circular(30),
-        //  border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
+        borderRadius: BorderRadius.circular(AppDimens.rPill),
       ),
       child: Row(
         children: [
@@ -29,10 +31,10 @@ class ActionButtons extends StatelessWidget {
               onPressed: onAddNote,
               style: TextButton.styleFrom(
                 foregroundColor: color,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: AppDimens.medium),
               ),
               child: const Text(
-                'Add notes',
+                AppStrings.addNotes,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
@@ -41,7 +43,7 @@ class ActionButtons extends StatelessWidget {
             child: SubmitButton(
               onPressed: onSubmit,
               backgroundColor: color,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: EdgeInsets.symmetric(vertical: AppDimens.medium),
             ),
           ),
         ],

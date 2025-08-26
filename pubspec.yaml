@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
   flutter_animate: ^4.5.0
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
