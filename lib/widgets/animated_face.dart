@@ -88,8 +88,7 @@ class AnimatedEye extends StatelessWidget {
     }
     return Transform.rotate(
       angle: rotation * (math.pi / 180),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 0),
+      child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(color: color, borderRadius: borderRadius),

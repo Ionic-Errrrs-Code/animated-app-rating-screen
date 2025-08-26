@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import '../models/experience.dart';
 import 'animated_face.dart'; // We need the MouthPainter
 
 class ExperienceSlider extends StatefulWidget {
   final Color darkColor;
   final Color sliderColor;
-  final Function(double) onChanged;
-  final double initialValue;
+  final ValueNotifier<double> percentage;
 
   const ExperienceSlider({
     super.key,
     required this.darkColor,
     required this.sliderColor,
-    required this.onChanged,
-    this.initialValue = 1.0,
+    required this.percentage,
   });
 
   @override
@@ -24,11 +23,10 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
   late Animation<double> _snapAnimation;
   double _currentValue = 1.0;
 
-  // ... (initState, didUpdateWidget, dispose, and _snapToClosestPosition remain the same)
   @override
   void initState() {
     super.initState();
-    _currentValue = widget.initialValue;
+    _currentValue = widget.percentage.value;
     _snapController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
@@ -40,16 +38,16 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
       setState(() {
         _currentValue = _snapAnimation.value;
       });
-      widget.onChanged(_currentValue);
+      widget.percentage.value = _currentValue;
     });
   }
 
   @override
   void didUpdateWidget(covariant ExperienceSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialValue != _currentValue && !_snapController.isAnimating) {
+    if (widget.percentage.value != _currentValue && !_snapController.isAnimating) {
       setState(() {
-        _currentValue = widget.initialValue;
+        _currentValue = widget.percentage.value;
       });
     }
   }
@@ -83,13 +81,14 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
       final sliderWidth = constraints.maxWidth;
       final handleSize = 36.0;
       final trackWidth = sliderWidth - handleSize;
+      final labels = Experience.values.map((e) => e.text.split(' ').map((w) => w[0] + w.substring(1).toLowerCase()).join(' ')).toList();
 
       return GestureDetector(
         onPanStart: (details) => _snapController.stop(),
         onPanUpdate: (details) {
           final newValue = (_currentValue + details.delta.dx / trackWidth).clamp(0.0, 1.0);
           setState(() => _currentValue = newValue);
-          widget.onChanged(_currentValue);
+          widget.percentage.value = _currentValue;
         },
         onPanEnd: (details) => _snapToClosestPosition(),
         child: Container(
@@ -122,7 +121,7 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: ['Bad', 'Not bad', 'Good']
+                children: labels
                     .map((label) => Text(label, style: TextStyle(color: widget.darkColor, fontSize: 14, fontWeight: FontWeight.bold)))
                     .toList(),
               ),
