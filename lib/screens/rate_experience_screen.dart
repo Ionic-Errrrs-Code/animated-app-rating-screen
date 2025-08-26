@@ -103,7 +103,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                       children: [
                         const Spacer(flex: 2),
                         Text(
-                          isSubmitted ? ' ' : 'How was your experience?', // Hide text when submitted
+                          isSubmitted ? ' ' : 'How was your shopping experience?', // Hide text when submitted
                           style: GoogleFonts.inter(
                             color: darkColor,
                             fontSize: 18,
