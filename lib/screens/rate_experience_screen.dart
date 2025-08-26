@@ -209,7 +209,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
             onAddNote: _switchToNoteView,
             onSubmit: _submitFeedback,
           ),
-          SizedBox(height: AppDimens.xLarge * 2),
+          SizedBox(height: AppDimens.xLarge * 1),
         ],
       ).animate(onPlay: (c) => c.forward())
           .fadeIn(duration: AppDurations.long, curve: Curves.easeOut)
