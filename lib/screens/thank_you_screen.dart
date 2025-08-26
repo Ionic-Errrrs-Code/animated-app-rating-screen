@@ -42,7 +42,7 @@ class ThankYouScreen extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 150),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

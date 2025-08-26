@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/experience.dart';
 import '../utils/helpers.dart';
 
@@ -10,17 +11,17 @@ class AnimatedTextDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final fontSize = screenWidth * 0.12;
+    final fontSize = screenWidth * 0.15;
 
     final badPosition = _calculateBadPosition(percentage, screenWidth);
     final notBadPosition = _calculateNotBadPosition(percentage, screenWidth);
     final goodPosition = _calculateGoodPosition(percentage, screenWidth);
 
-    final textStyle = TextStyle(
+    final textStyle =  GoogleFonts.inter(
       fontSize: fontSize,
       fontWeight: FontWeight.w900,
       color: Colors.black.withValues(alpha: 0.35),
-      letterSpacing: -2.0,
+      letterSpacing: -5.0,
     );
 
     return SizedBox(

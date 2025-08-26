@@ -33,10 +33,16 @@ class NoteInputView extends StatelessWidget {
                 maxLines: null, // Allows multiline input
                 keyboardType: TextInputType.multiline,
                 cursorColor: darkColor,
-                style: TextStyle(color: darkColor, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: darkColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   hintText: 'Add note...',
-                  hintStyle: TextStyle(color: darkColor.withAlpha(153), fontWeight: FontWeight.w600), // Corrected deprecated method
+                  hintStyle: TextStyle(
+                      color: darkColor.withAlpha(153),
+                      fontWeight:
+                          FontWeight.w600), // Corrected deprecated method
                   border: InputBorder.none,
                 ),
               ),
@@ -48,10 +54,21 @@ class NoteInputView extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: darkColor,
                   foregroundColor: Colors.white,
-                  shape: const CircleBorder(),
                   padding: const EdgeInsets.all(16),
                 ),
-                child: const Icon(Icons.arrow_forward),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Submit',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_forward, size: 20),
+                  ],
+                ),
               ),
             ),
           ],

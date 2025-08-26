@@ -103,15 +103,17 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                       children: [
                         const Spacer(flex: 2),
                         Text(
-                          isSubmitted ? ' ' : 'How was your shopping experience?', // Hide text when submitted
+                          isSubmitted ? ' ' : 'How was your experience?', // Hide text when submitted
                           style: GoogleFonts.inter(
                             color: darkColor,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         )
-                            .animate(target: isSubmitted || isNoteView ? 1 : 0)
-                            .fadeOut(duration: 250.ms),
+                            // *** FIXED ANIMATION LOGIC ***
+                            .animate(target: isNoteView || isSubmitted ? 1 : 0)
+                            .fade(begin: 1, end: 0, duration: 300.ms)
+                            .slideY(begin: 0, end: -1.0, duration: 400.ms, curve: Curves.easeOutCubic),
                         const SizedBox(height: 24),
                         AnimatedFace(
                           percentage: value,
@@ -133,7 +135,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                           )
                               .animate()
                               .fadeIn(duration: 400.ms, curve: Curves.easeOut)
-                              .slideY(begin: 0.5, curve: Curves.easeOut),
+                              .slideY(begin: 0.2, curve: Curves.easeOut),
                         const Spacer(flex: 4),
                       ],
                     ),
@@ -145,21 +147,9 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                     left: 0,
                     right: 0,
                     child: AnimatedSwitcher(
-                        duration: 400.ms,
+                        duration: 500.ms,
                         switchInCurve: Curves.easeOutQuart,
                         switchOutCurve: Curves.easeInQuart,
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: SlideTransition(
-                              position: Tween<Offset>(
-                                begin: const Offset(0, 0.5),
-                                end: Offset.zero,
-                              ).animate(animation),
-                              child: child,
-                            ),
-                          );
-                        },
                         child: _buildBottomContent(isNoteView, isSubmitted, darkColor, colors, value)),
                   ),
 
@@ -223,8 +213,8 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
           const SizedBox(height: 50),
         ],
       ).animate(onPlay: (c) => c.forward())
-          .slideY(begin: 0.8, duration: 500.ms, curve: Curves.easeOutCubic)
-          .fadeIn(duration: 500.ms, curve: Curves.easeOutCubic);
+          .fadeIn(duration: 400.ms, curve: Curves.easeOut)
+          .slideY(begin: 0.5, duration: 400.ms, curve: Curves.easeOut);
     }
   }
 
