@@ -19,15 +19,17 @@ class AnimatedFace extends StatelessWidget {
     final double eyeWidth, eyeHeight, eyeRotation, mouthRotation;
 
     if (percentage <= 0.5) {
+      // Bad to Not Bad
       final t = percentage / 0.5;
-      eyeWidth = lerpDouble(faceSize.width * 0.2, faceSize.width * 0.4, t);
+      eyeWidth = lerpDouble(faceSize.width * 0.2, faceSize.width * 0.45, t);
       eyeHeight = lerpDouble(faceSize.height * 0.4, faceSize.height * 0.15, t);
       eyeRotation = lerpDouble(20.0, 0.0, t);
       mouthRotation = math.pi;
     } else {
+      // Not Bad to Good
       final t = (percentage - 0.5) / 0.5;
-      eyeWidth = lerpDouble(faceSize.width * 0.4, faceSize.width * 0.3, t);
-      eyeHeight = lerpDouble(faceSize.height * 0.15, faceSize.width * 0.3, t);
+      eyeWidth = lerpDouble(faceSize.width * 0.45, faceSize.width * 0.4, t);
+      eyeHeight = lerpDouble(faceSize.height * 0.15, faceSize.width * 0.4, t);
       eyeRotation = 0.0;
       mouthRotation = lerpDouble(math.pi, 0.0, t);
     }
@@ -46,12 +48,11 @@ class AnimatedFace extends StatelessWidget {
               AnimatedEye(width: eyeWidth, height: eyeHeight, color: darkColor, rotation: eyeRotation, percentage: percentage),
             ],
           ),
-          SizedBox(height: faceSize.height * 0.1),
+          SizedBox(height: faceSize.height * 0.15),
           AnimatedMouth(
             rotation: mouthRotation,
             color: darkColor,
-            // --- Mouth size adjusted ---
-            size: Size(faceSize.width * 0.2, faceSize.height * 0.18),
+            size: Size(faceSize.width * 0.25, faceSize.height * 0.2),
           ),
         ],
       ),
@@ -59,7 +60,6 @@ class AnimatedFace extends StatelessWidget {
   }
 }
 
-// ... (AnimatedEye class remains the same)
 class AnimatedEye extends StatelessWidget {
   final double width;
   final double height;
@@ -124,8 +124,7 @@ class MouthPainter extends CustomPainter {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      // --- Mouth radius/thickness adjusted ---
-      ..strokeWidth = size.width * 0.35
+      ..strokeWidth = size.width * 0.5
       ..strokeCap = StrokeCap.round;
 
     final path = Path()
