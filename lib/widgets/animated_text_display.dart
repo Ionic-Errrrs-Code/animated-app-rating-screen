@@ -10,7 +10,7 @@ class AnimatedTextDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final fontSize = screenWidth * 0.15;
+    final fontSize = screenWidth * 0.12;
 
     final badPosition = _calculateBadPosition(percentage, screenWidth);
     final notBadPosition = _calculateNotBadPosition(percentage, screenWidth);
