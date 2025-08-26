@@ -14,7 +14,7 @@ A delightful Flutter experience rating screen with expressive animations, smooth
 
 ## Demo
 
-![Demo GIF](demogif.gif)
+![Demo GIF](demo.gif)
 
 - Drag the handle to change the mood
 - Tap “Add notes” to write a note, “Submit” to see a thank-you screen
