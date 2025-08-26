@@ -64,14 +64,16 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
         final darkColor = colors['dark']!;
 
         return Scaffold(
+          backgroundColor: colors['background'],
           resizeToAvoidBottomInset: true, // Important for keyboard
           body: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => FocusScope.of(context).unfocus(),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              color: colors['background'],
+              color: Colors.transparent,
               child: Stack(
+                fit: StackFit.expand,
                 children: [
                   // --- MAIN CONTENT AREA (Face always visible, text fades; note appears below face) ---
                   AnimatedPositioned(
