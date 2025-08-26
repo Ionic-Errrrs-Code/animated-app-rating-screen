@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/experience.dart';
+import '../utils/constants.dart';
 import '../widgets/action_buttons.dart';
 import '../widgets/animated_face.dart';
 import '../widgets/animated_text_display.dart';
@@ -13,6 +14,7 @@ import 'thank_you_screen.dart'; // Import the new screen
 
 enum ViewState { rating, note, submitted }
 
+/// Main screen allowing users to rate their experience and optionally add notes.
 class RateExperienceScreen extends StatefulWidget {
   const RateExperienceScreen({super.key});
 
@@ -71,8 +73,6 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     final isNoteView = _viewState == ViewState.note;
     final isSubmitted = _viewState == ViewState.submitted;
     final viewInsets = MediaQuery.of(context).viewInsets;
@@ -91,7 +91,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
             behavior: HitTestBehavior.opaque,
             onTap: () => FocusScope.of(context).unfocus(),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDurations.normal,
               color: colors['background'],
               child: Stack(
                 fit: StackFit.expand,
@@ -103,7 +103,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                       children: [
                         const Spacer(flex: 2),
                         Text(
-                          isSubmitted ? ' ' : 'How was your experience?', // Hide text when submitted
+                          isSubmitted ? ' ' : AppStrings.headline, // Hide text when submitted
                           style: GoogleFonts.inter(
                             color: darkColor,
                             fontSize: 18,
@@ -112,21 +112,21 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                         )
                             // *** FIXED ANIMATION LOGIC ***
                             .animate(target: isNoteView || isSubmitted ? 1 : 0)
-                            .fade(begin: 1, end: 0, duration: 300.ms)
-                            .slideY(begin: 0, end: -1.0, duration: 400.ms, curve: Curves.easeOutCubic),
-                        const SizedBox(height: 24),
+                            .fade(begin: 1, end: 0, duration: AppDurations.normal)
+                            .slideY(begin: 0, end: -1.0, duration: AppDurations.long, curve: Curves.easeOutCubic),
+                        SizedBox(height: AppDimens.large),
                         AnimatedFace(
                           percentage: value,
                           darkColor: darkColor,
-                          faceSize: Size(screenWidth * 0.5, screenHeight * 0.2),
+                          faceSize: AppDimens.faceSize(context),
                         )
                             .animate(target: isKeyboardVisible ? 1 : 0)
                             .scale(
                               end: const Offset(0.8, 0.8),
-                              duration: 300.ms,
+                              duration: AppDurations.normal,
                               curve: Curves.easeOut,
                             ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppDimens.large),
                         if (isNoteView)
                           NoteInputView(
                             darkColor: darkColor,
@@ -134,7 +134,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                             onSubmit: _submitFeedback,
                           )
                               .animate()
-                              .fadeIn(duration: 400.ms, curve: Curves.easeOut)
+                              .fadeIn(duration: AppDurations.long, curve: Curves.easeOut)
                               .slideY(begin: 0.2, curve: Curves.easeOut),
                         const Spacer(flex: 4),
                       ],
@@ -147,7 +147,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                     left: 0,
                     right: 0,
                     child: AnimatedSwitcher(
-                        duration: 500.ms,
+                        duration: AppDurations.long,
                         switchInCurve: Curves.easeOutQuart,
                         switchOutCurve: Curves.easeInQuart,
                         child: _buildBottomContent(isNoteView, isSubmitted, darkColor, colors, value)),
@@ -171,7 +171,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                           ),
                         ),
                       ),
-                    ).animate().fadeIn(delay: 500.ms).slideY(begin: -1, curve: Curves.easeOut),
+                    ).animate().fadeIn(delay: AppDurations.long).slideY(begin: -1, curve: Curves.easeOut),
                 ],
               ),
             ),
@@ -197,23 +197,23 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           AnimatedTextDisplay(percentage: value),
-          const SizedBox(height: 50),
+          SizedBox(height: AppDimens.xLarge + AppDimens.small),
           ExperienceSlider(
             darkColor: darkColor,
             sliderColor: colors['slider']!,
             percentage: _percentage,
           ),
-          const SizedBox(height: 70),
+          SizedBox(height: AppDimens.xLarge * 2 + AppDimens.small),
           ActionButtons(
             color: darkColor,
             onAddNote: _switchToNoteView,
             onSubmit: _submitFeedback,
           ),
-          const SizedBox(height: 50),
+          SizedBox(height: AppDimens.xLarge * 2),
         ],
       ).animate(onPlay: (c) => c.forward())
-          .fadeIn(duration: 400.ms, curve: Curves.easeOut)
-          .slideY(begin: 0.5, duration: 400.ms, curve: Curves.easeOut);
+          .fadeIn(duration: AppDurations.long, curve: Curves.easeOut)
+          .slideY(begin: 0.5, duration: AppDurations.long, curve: Curves.easeOut);
     }
   }
 }

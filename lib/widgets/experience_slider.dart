@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/experience.dart';
+import '../utils/constants.dart';
 import 'animated_face.dart'; // We need the MouthPainter
 
+/// Interactive experience slider that snaps between three positions.
 class ExperienceSlider extends StatefulWidget {
   final Color darkColor;
   final Color sliderColor;
@@ -28,7 +31,7 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
     super.initState();
     _currentValue = widget.percentage.value;
     _snapController = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: AppDurations.long,
       vsync: this,
     );
     _snapAnimation = Tween<double>(begin: _currentValue, end: _currentValue)
@@ -79,9 +82,11 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final sliderWidth = constraints.maxWidth;
-      final handleSize = 36.0;
+      final handleSize = AppDimens.sliderHandle;
       final trackWidth = sliderWidth - handleSize;
-      final labels = Experience.values.map((e) => e.text.split(' ').map((w) => w[0] + w.substring(1).toLowerCase()).join(' ')).toList();
+      final labels = Experience.values
+          .map((e) => e.text.split(' ').map((w) => w[0] + w.substring(1).toLowerCase()).join(' '))
+          .toList();
 
       return GestureDetector(
         onPanStart: (details) => _snapController.stop(),
@@ -92,20 +97,20 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
         },
         onPanEnd: (details) => _snapToClosestPosition(),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: sliderWidth * 0.08),
+          padding: EdgeInsets.symmetric(horizontal: (sliderWidth * 0.08).w),
           color: Colors.transparent,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 50,
+                height: 50.h,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Container(height: 6, decoration: BoxDecoration(color: widget.sliderColor, borderRadius: BorderRadius.circular(3))),
+                    Container(height: 6.h, decoration: BoxDecoration(color: widget.sliderColor, borderRadius: BorderRadius.circular(3.r))),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(3, (index) => Container(width: 24, height: 24, decoration: BoxDecoration(color: widget.sliderColor, shape: BoxShape.circle))),
+                      children: List.generate(3, (index) => Container(width: 24.w, height: 24.w, decoration: BoxDecoration(color: widget.sliderColor, shape: BoxShape.circle))),
                     ),
                     Align(
                       alignment: Alignment(_currentValue * 2 - 1, 0),
@@ -118,11 +123,11 @@ class _ExperienceSliderState extends State<ExperienceSlider> with TickerProvider
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: labels
-                    .map((label) => Text(label, style: TextStyle(color: widget.darkColor, fontSize: 14, fontWeight: FontWeight.bold)))
+                    .map((label) => Text(label, style: TextStyle(color: widget.darkColor, fontSize: 14.sp, fontWeight: FontWeight.bold)))
                     .toList(),
               ),
             ],
