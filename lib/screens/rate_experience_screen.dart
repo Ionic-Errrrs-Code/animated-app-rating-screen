@@ -53,7 +53,8 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
     final viewInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
     final keyboardVisible = viewInsetsBottom > 0.0;
     final minTop = MediaQuery.of(context).padding.top + 64;
-    final desiredTop = keyboardVisible ? screenHeight * 0.1 : screenHeight * 0.22;
+    final baseTop = isNoteView ? screenHeight * 0.18 : screenHeight * 0.22;
+    final desiredTop = keyboardVisible ? screenHeight * 0.06 : baseTop;
     final topOffset = desiredTop < minTop ? minTop : desiredTop;
 
     return ValueListenableBuilder<double>(
@@ -72,7 +73,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
               color: colors['background'],
               child: Stack(
                 children: [
-                  // --- MAIN CONTENT AREA (Face always visible, text fades) ---
+                  // --- MAIN CONTENT AREA (Face always visible, text fades; note appears below face) ---
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.easeInOut,
@@ -85,7 +86,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                           opacity: isNoteView ? 0.0 : 1.0,
                           duration: const Duration(milliseconds: 250),
                           child: Text(
-                            'How was your shopping experience?',
+                            'How was your experience?',
                             style: TextStyle(
                               color: darkColor,
                               fontSize: 18,
@@ -93,7 +94,7 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 70),
+                        const SizedBox(height: 16),
                         AnimatedScale(
                           scale: keyboardVisible ? 0.85 : 1.0,
                           duration: const Duration(milliseconds: 250),
@@ -101,35 +102,30 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                           child: AnimatedFace(
                             percentage: value,
                             darkColor: darkColor,
-                            faceSize: Size(screenWidth * 0.5, screenHeight * 0.18),
+                            faceSize: Size(screenWidth * 0.4, screenHeight * 0.16),
                           ),
                         ),
+                        if (isNoteView) ...[
+                          const SizedBox(height: 16),
+                          NoteInputView(
+                            darkColor: darkColor,
+                            focusNode: _noteFocusNode,
+                            onSubmit: () {},
+                          ).animate(key: const ValueKey('note_center_anim')).fadeIn(duration: 250.ms, curve: Curves.easeOut).slideY(begin: 0.06, end: 0, duration: 280.ms, curve: Curves.easeOutCubic),
+                          const SizedBox(height: 8),
+                        ],
                       ],
                     ),
                   ),
 
-                  // --- BOTTOM AREA (Rating or Note Input) ---
+                  // --- BOTTOM AREA (Rating controls only in rating view) ---
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     transitionBuilder: (child, animation) {
                       return FadeTransition(opacity: animation, child: child);
                     },
                     child: isNoteView
-                        ? Padding(
-                            key: const ValueKey('note_view'),
-                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                NoteInputView(
-                                  darkColor: darkColor,
-                                  focusNode: _noteFocusNode,
-                                  onSubmit: () {},
-                                ).animate(key: const ValueKey('note_anim')).fadeIn(duration: 250.ms, curve: Curves.easeOut).slideY(begin: 0.08, end: 0, duration: 300.ms, curve: Curves.easeOutCubic),
-                                const SizedBox(height: 24),
-                              ],
-                            ),
-                          )
+                        ? const SizedBox.shrink()
                         : Column(
                             key: const ValueKey('rating_view'),
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -138,20 +134,20 @@ class _RateExperienceScreenState extends State<RateExperienceScreen> {
                                   .animate(key: const ValueKey('text_anim'))
                                   .fadeIn(duration: 200.ms)
                                   .slideY(begin: 0.05, end: 0, duration: 250.ms),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 24),
                               ExperienceSlider(
                                 darkColor: darkColor,
                                 sliderColor: colors['slider']!,
                                 initialValue: value,
                                 onChanged: (p) => _percentage.value = p,
                               ).animate(key: const ValueKey('slider_anim')).fadeIn(duration: 220.ms).slideY(begin: 0.05, end: 0, duration: 260.ms),
-                              const SizedBox(height: 70),
+                              const SizedBox(height: 16),
                               ActionButtons(
                                 color: darkColor,
                                 onAddNote: _switchToNoteView,
                                 onSubmit: () {},
                               ).animate(key: const ValueKey('buttons_anim')).fadeIn(duration: 240.ms).slideY(begin: 0.04, end: 0, duration: 280.ms),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 24),
                             ],
                           ),
                   ),
