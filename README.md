@@ -11,7 +11,10 @@ A delightful Flutter experience rating screen with expressive animations, smooth
 - Responsive layout via `flutter_screenutil` (iPhone 14/15 base design)
 - Centralized constants for spacing, durations, and strings
 
+
 ## Demo
+
+![Demo GIF](demogif.gif)
 
 - Drag the handle to change the mood
 - Tap “Add notes” to write a note, “Submit” to see a thank-you screen
